@@ -59,7 +59,89 @@
         display: flex; align-items: center; justify-content: center;
         color: #000; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
       }
+<style>
+  /* ... previous styles remain same ... */
+  #main-menu {
+    pointer-events: none; /* Allows clicks to pass through to the slider below */
+  }
+  #button-container, #main-title {
+    pointer-events: auto; /* Re-enables clicks for buttons only */
+  }
+  #slider-handle {
+    z-index: 50; /* Ensure this is the highest layer in the slider group */
+    touch-action: none; /* Prevents the browser from scrolling while sliding */
+  }
+</style>
 
+<div id="main-menu">
+  <h1 id="main-title">Ancient Egypt</h1>
+  <div id="button-container">
+    <button class="xr-btn" onclick="enter360('gizaImg')">Giza</button>
+    <button class="xr-btn" onclick="enter360('luxorImg')">Luxor</button>
+    <button class="xr-btn" onclick="enter360('nileImg')">The Nile</button>
+    <button class="xr-btn" onclick="enter360('tombImg')">The Tomb</button>
+  </div>
+</div>
+
+<div id="slider-viewport">
+  <img id="img-bottom" class="slider-img" src="menu-giza-modern.jpg">
+  <div id="img-top" class="slider-img" style="background-image: url('menu-giza-ancient.jpg'); background-size: cover; background-position: center; width: 50%;"></div>
+  
+  <div id="slider-handle" style="left: 50%;">
+    <div id="slider-circle">⇔</div>
+  </div>
+</div>
+
+<script>
+  const topImage = document.getElementById('img-top');
+  const handle = document.getElementById('slider-handle');
+  const sliderView = document.getElementById('slider-viewport');
+
+  let isDragging = false;
+
+  const startDragging = (e) => {
+    isDragging = true;
+    moveSlider(e); // Allow click-to-snap
+  };
+
+  const stopDragging = () => { isDragging = false; };
+
+  const moveSlider = (e) => {
+    if (!isDragging) return;
+    
+    // Handle both Mouse and Touch coordinates
+    let x = 0;
+    if (e.type.includes('touch')) {
+      x = e.touches[0].pageX;
+    } else {
+      x = e.pageX;
+    }
+
+    let width = window.innerWidth;
+    let percent = (x / width) * 100;
+    
+    // Clamp between 0 and 100
+    percent = Math.min(Math.max(percent, 0), 100);
+    
+    topImage.style.width = percent + '%';
+    handle.style.left = percent + '%';
+    
+    // Prevent default scrolling on mobile
+    if(e.cancelable) e.preventDefault();
+  };
+
+  // Mouse Listeners
+  handle.addEventListener('mousedown', startDragging);
+  window.addEventListener('mouseup', stopDragging);
+  window.addEventListener('mousemove', moveSlider);
+
+  // Touch Listeners (Crucial for Mobile)
+  handle.addEventListener('touchstart', startDragging, { passive: false });
+  window.addEventListener('touchend', stopDragging);
+  window.addEventListener('touchmove', moveSlider, { passive: false });
+
+  // Scene transition functions remain the same as previous response
+</script>
       /* --- NAVIGATION --- */
       #backBtn {
         position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
