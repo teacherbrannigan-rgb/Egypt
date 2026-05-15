@@ -10,148 +10,59 @@
     <style>
       body { margin: 0; overflow: hidden; font-family: 'Georgia', serif; background-color: #87CEEB; }
       
+      /* --- BACKGROUND IMAGE --- */
+      #bg-image {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background-image: url('menu-giza-ancient.jpg'); /* Your single background image */
+        background-size: cover;
+        background-position: center;
+        z-index: 1;
+      }
+
       /* --- MENU UI --- */
       #main-menu {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        z-index: 9999; display: flex; flex-direction: column; 
+        z-index: 100; display: flex; flex-direction: column; 
         align-items: center; justify-content: flex-start;
+        background: rgba(0, 0, 0, 0.2); /* Slight tint to make gold pop */
       }
       
       #main-title {
-        color: #C0C0C0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        font-size: 3rem; margin-top: 40px; margin-bottom: 10px;
-        letter-spacing: 3px; text-transform: uppercase;
+        color: #FFD700; /* Bright Gold */
+        text-shadow: 2px 2px 8px rgba(0,0,0,0.8), 0 0 10px rgba(255, 215, 0, 0.5);
+        font-size: 3.5rem; margin-top: 50px; margin-bottom: 20px;
+        letter-spacing: 5px; text-transform: uppercase;
+        text-align: center;
       }
 
       #button-container {
-        display: flex; flex-direction: row; gap: 10px; margin-top: 10px; flex-wrap: wrap; justify-content: center;
+        display: flex; flex-direction: row; gap: 15px; flex-wrap: wrap; justify-content: center;
       }
 
       .xr-btn {
-        padding: 12px 20px; font-size: 0.9rem; cursor: pointer;
-        border: 2px solid #C0C0C0; background: rgba(0,0,0,0.7);
-        color: #C0C0C0; border-radius: 8px; transition: 0.3s;
-        font-weight: bold; min-width: 100px;
+        padding: 15px 25px; font-size: 1rem; cursor: pointer;
+        border: 2px solid #FFD700; background: rgba(0,0,0,0.8);
+        color: #FFD700; border-radius: 50px; transition: 0.3s;
+        font-weight: bold; text-transform: uppercase;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
       }
-      .xr-btn:hover { background: #C0C0C0; color: #000; }
-
-      /* --- SLIDER BACKDROP --- */
-      #slider-viewport {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        overflow: hidden; z-index: 1;
+      .xr-btn:hover { 
+        background: #FFD700; color: #000; 
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
       }
-      
-      .slider-img {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        object-fit: cover; pointer-events: none;
-      }
-      
-      #img-top { z-index: 2; width: 50%; border-right: 3px solid #FFF; }
 
-      #slider-handle {
-        position: absolute; top: 0; bottom: 0; left: 50%;
-        width: 40px; z-index: 3; cursor: col-resize; transform: translateX(-50%);
-        display: flex; align-items: center; justify-content: center;
-      }
-      #slider-circle {
-        width: 50px; height: 50px; border-radius: 50%;
-        background: #C0C0C0; border: 3px solid #FFF;
-        display: flex; align-items: center; justify-content: center;
-        color: #000; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-      }
-<style>
-  /* ... previous styles remain same ... */
-  #main-menu {
-    pointer-events: none; /* Allows clicks to pass through to the slider below */
-  }
-  #button-container, #main-title {
-    pointer-events: auto; /* Re-enables clicks for buttons only */
-  }
-  #slider-handle {
-    z-index: 50; /* Ensure this is the highest layer in the slider group */
-    touch-action: none; /* Prevents the browser from scrolling while sliding */
-  }
-</style>
-
-<div id="main-menu">
-  <h1 id="main-title">Ancient Egypt</h1>
-  <div id="button-container">
-    <button class="xr-btn" onclick="enter360('gizaImg')">Giza</button>
-    <button class="xr-btn" onclick="enter360('luxorImg')">Luxor</button>
-    <button class="xr-btn" onclick="enter360('nileImg')">The Nile</button>
-    <button class="xr-btn" onclick="enter360('tombImg')">The Tomb</button>
-  </div>
-</div>
-
-<div id="slider-viewport">
-  <img id="img-bottom" class="slider-img" src="menu-giza-modern.jpg">
-  <div id="img-top" class="slider-img" style="background-image: url('menu-giza-ancient.jpg'); background-size: cover; background-position: center; width: 50%;"></div>
-  
-  <div id="slider-handle" style="left: 50%;">
-    <div id="slider-circle">⇔</div>
-  </div>
-</div>
-
-<script>
-  const topImage = document.getElementById('img-top');
-  const handle = document.getElementById('slider-handle');
-  const sliderView = document.getElementById('slider-viewport');
-
-  let isDragging = false;
-
-  const startDragging = (e) => {
-    isDragging = true;
-    moveSlider(e); // Allow click-to-snap
-  };
-
-  const stopDragging = () => { isDragging = false; };
-
-  const moveSlider = (e) => {
-    if (!isDragging) return;
-    
-    // Handle both Mouse and Touch coordinates
-    let x = 0;
-    if (e.type.includes('touch')) {
-      x = e.touches[0].pageX;
-    } else {
-      x = e.pageX;
-    }
-
-    let width = window.innerWidth;
-    let percent = (x / width) * 100;
-    
-    // Clamp between 0 and 100
-    percent = Math.min(Math.max(percent, 0), 100);
-    
-    topImage.style.width = percent + '%';
-    handle.style.left = percent + '%';
-    
-    // Prevent default scrolling on mobile
-    if(e.cancelable) e.preventDefault();
-  };
-
-  // Mouse Listeners
-  handle.addEventListener('mousedown', startDragging);
-  window.addEventListener('mouseup', stopDragging);
-  window.addEventListener('mousemove', moveSlider);
-
-  // Touch Listeners (Crucial for Mobile)
-  handle.addEventListener('touchstart', startDragging, { passive: false });
-  window.addEventListener('touchend', stopDragging);
-  window.addEventListener('touchmove', moveSlider, { passive: false });
-
-  // Scene transition functions remain the same as previous response
-</script>
       /* --- NAVIGATION --- */
       #backBtn {
-        position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-        z-index: 8888; padding: 15px 40px; background: rgba(0,0,0,0.8);
-        color: #C0C0C0; border: 2px solid #C0C0C0; border-radius: 30px;
-        display: none; cursor: pointer; font-weight: bold;
+        position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%);
+        z-index: 8888; padding: 15px 40px; background: rgba(0,0,0,0.9);
+        color: #FFD700; border: 2px solid #FFD700; border-radius: 30px;
+        display: none; cursor: pointer; font-weight: bold; font-size: 1.1rem;
       }
     </style>
   </head>
   <body>
+
+    <div id="bg-image"></div>
 
     <div id="main-menu">
       <h1 id="main-title">Ancient Egypt</h1>
@@ -161,15 +72,6 @@
         <button class="xr-btn" onclick="enter360('luxorImg')">Luxor</button>
         <button class="xr-btn" onclick="enter360('nileImg')">The Nile</button>
         <button class="xr-btn" onclick="enter360('tombImg')">The Tomb</button>
-      </div>
-    </div>
-
-    <div id="slider-viewport">
-      <img id="img-bottom" class="slider-img" src="menu-giza-modern.jpg">
-      <div id="img-top" class="slider-img" style="background-image: url('menu-giza-ancient.jpg'); background-size: cover; background-position: center;"></div>
-      
-      <div id="slider-handle">
-        <div id="slider-circle">⇔</div>
       </div>
     </div>
 
@@ -186,54 +88,44 @@
       <a-entity camera look-controls="magicWindowTrackingEnabled: true; touchEnabled: true"></a-entity>
     </a-scene>
 
-    <button id="backBtn" onclick="exit360()">← BACK TO MENU</button>
+    <button id="backBtn" onclick="exit360()">← EXIT TO MENU</button>
 
     <script>
       const menu = document.getElementById('main-menu');
-      const sliderView = document.getElementById('slider-viewport');
-      const topImage = document.getElementById('img-top');
-      const handle = document.getElementById('slider-handle');
+      const bgImage = document.getElementById('bg-image');
       const scene = document.getElementById('mainScene');
       const sky = document.getElementById('skyBox');
       const backBtn = document.getElementById('backBtn');
 
-      // --- SLIDER LOGIC ---
-      let isDragging = false;
-      const moveSlider = (e) => {
-        if (!isDragging) return;
-        let x = (e.pageX || e.touches[0].pageX);
-        let width = window.innerWidth;
-        let percent = (x / width) * 100;
-        percent = Math.min(Math.max(percent, 0), 100);
-        topImage.style.width = percent + '%';
-        handle.style.left = percent + '%';
-      };
-
-      handle.addEventListener('mousedown', () => isDragging = true);
-      handle.addEventListener('touchstart', () => isDragging = true);
-      window.addEventListener('mouseup', () => isDragging = false);
-      window.addEventListener('touchend', () => isDragging = false);
-      window.addEventListener('mousemove', moveSlider);
-      window.addEventListener('touchmove', moveSlider);
-
-      // --- 360° TRANSITION LOGIC ---
       function enter360(imgId) {
-        // Request Motion Permission for iOS/Sensors if needed
+        // Request motion sensor permissions for mobile VR
         if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-          DeviceOrientationEvent.requestPermission();
+          DeviceOrientationEvent.requestPermission()
+            .then(permissionState => {
+              if (permissionState === 'granted') {
+                proceedToScene(imgId);
+              }
+            })
+            .catch(console.error);
+        } else {
+          proceedToScene(imgId);
         }
+      }
 
+      function proceedToScene(imgId) {
         menu.style.display = 'none';
-        sliderView.style.display = 'none';
+        bgImage.style.display = 'none';
         scene.style.display = 'block';
         backBtn.style.display = 'block';
 
         sky.setAttribute('src', '#' + imgId);
+        // Force A-Frame to recalculate the view
         scene.resize();
       }
 
       function exit360() {
-        location.reload(); // Cleanest way to reset the VR camera and sensors
+        // Refresh page to clean up memory and reset camera orientation
+        location.reload();
       }
     </script>
   </body>
